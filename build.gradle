@@ -1,0 +1,144 @@
+//properties shared in all projects
+ext{	  
+        project_group                    = 'com.accenture'
+		project_version                  = '1.0.0-SNAPSHOT'
+		java_version                     = '1.8'
+				
+		//all
+		junit_version                    = '4.12'
+		commonsLang3_version             = '3.4'
+		slf4j_version                    = '1.7.12'
+        log4j_version                    = '1.2.17'
+  		
+		// Web dependencies -->
+		spring_version                   = '4.3.4.RELEASE'
+		
+		//Thymeleaf
+		thymeleaf_version                = '3.0.2.RELEASE'
+		thymeleaf_layout_dialect_version = '2.1.2'
+		
+		//javascript libraries
+		webjars_bootstrap_version        = '3.3.6'
+		webjars_jquery_ui_version        = '1.11.4'
+		jquery_ui_themes_version         = '1.11.4'
+		webjars_jquery_version           = '2.2.4'
+		jquery_ui_themes_version         = '1.11.4'
+		moment_version                   = '2.14.1'
+		toastr_version                   = '2.1.2'
+		
+		javax_servlet_api_version        = '3.1.0'
+}
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'org.akhikhl.gretty'
+apply plugin: 'idea'
+apply plugin: 'maven'
+
+sourceCompatibility = java_version
+targetCompatibility = java_version	
+
+
+
+repositories {
+		// Use 'jcenter' for resolving your dependencies.
+		// You can declare any Maven/Ivy/file repository here.
+		mavenLocal()
+		mavenCentral()			
+}
+	
+	
+// In this section you declare where to find the dependencies of your project	
+dependencies {
+       compile     group:'org.apache.commons', name:'commons-lang3',   version: commonsLang3_version
+	   // SLF4J
+	   compile group: 'org.slf4j',    name:'slf4j-api', 	         version: slf4j_version
+	   compile group: 'org.slf4j',    name:'slf4j-log4j12', 	     version: slf4j_version
+	   compile group: 'log4j', 	      name:'log4j', 			     version: log4j_version 
+   		
+   		//Spring mvc
+	    compile         group: 'org.springframework',          name: 'spring-webmvc',       version: spring_version
+		
+		//Thymeleaf 
+		compile         group: 'org.thymeleaf',                name: 'thymeleaf',                        version: thymeleaf_version
+		compile         group: 'org.thymeleaf',                name: 'thymeleaf-spring4',                version: thymeleaf_version
+		
+		//Decorator Layout
+		compile         group: 'nz.net.ultraq.thymeleaf',      name: 'thymeleaf-layout-dialect',         version: thymeleaf_layout_dialect_version
+		
+		//Javascript Libraries
+		compile         ("org.webjars:bootstrap:$webjars_bootstrap_version"){
+			exclude     group: 'org.webjars',  module:'jquery'
+		}
+		compile         ("org.webjars:jquery-ui:$webjars_jquery_ui_version"){
+			exclude     group: 'org.webjars',  module:'jquery'
+		}
+		
+		compile         group: 'org.webjars.bower',            name: 'jquery',                           version: webjars_jquery_version
+		compile         group: 'org.webjars.bower',            name: 'moment',                           version: moment_version
+		
+		compile ("org.webjars:jquery-ui-themes:$jquery_ui_themes_version"){
+			exclude     group: 'org.webjars',  module:'jquery'
+		}
+				
+		compile ("org.webjars:toastr:$toastr_version"){
+			exclude     group: 'org.webjars',  module:'jquery'			
+		}
+		
+		//Servlet
+		providedCompile group: 'javax.servlet',                name:'javax.servlet-api',    version: javax_servlet_api_version		
+		
+}
+
+//Gretty
+buildscript {
+  repositories {
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'org.akhikhl.gretty:gretty:+'
+  }
+}
+
+gretty {
+  port = 8080
+  contextPath = 'spring4-v1'
+  servletContainer = 'jetty9'
+}
+
+//For Eclipse IDE only
+eclipse {
+
+  wtp {
+    component {
+      
+      //define context path, default to project folder name
+      contextPath = '	'
+      
+    }
+    
+  }
+}
+
+task createPom << {
+    pom {
+        project {
+            groupId 'com.accenture'
+            artifactId 'test'
+            version '1.0.0'
+
+            inceptionYear '2008'
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    distribution 'repo'
+                }
+            }
+        }
+    }.writeTo("pom.xml")
+}
+
+
